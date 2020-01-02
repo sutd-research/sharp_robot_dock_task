@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+
+    <node pkg="visual_dock_task" name="visual_dock_task" type="visual_dock_task_node" output="screen">
+
+        <!-- this node's task ID -->
+        <param name="task_id" value="10000" type="int" />
+
+        <!-- for testing only, when demo timer has finished, publish this value instead
+        <param name="demo_task_done_status_value" value="-3" type="int" /> -->
+
+    </node>
+ 
+</launch>
