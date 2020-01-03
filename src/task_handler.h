@@ -32,11 +32,7 @@ private:
 
     /// true if task is running, false otherwise
     bool m_is_running;
-
-    /// @todo for demo only
-    int m_demo_task_done_status_value;
    
-
     // Action server
     Client *ac;
 

@@ -13,7 +13,6 @@ namespace handler
  */
 TaskHandler::TaskHandler()
     : BaseHandler(),
-      m_demo_task_done_status_value(task_msgs::TaskStatus::K_TASK_STATUS_DONE),
       m_is_running(false)
 {
 }
@@ -38,20 +37,6 @@ void TaskHandler::InitROSParams()
     ROS_DEBUG_STREAM(ros::this_node::getName() << " - Executing ROS params initialization");
 
     /// @todo retrieve your ROS params here
-
-    /// for testing only, when demo timer has finished, publish this value instead
-    if (m_nh_private.hasParam("demo_task_done_status_value"))
-    {
-        if (m_nh_private.getParam("demo_task_done_status_value", m_demo_task_done_status_value))
-        {
-            ROS_WARN_STREAM(ros::this_node::getName() << " - m_demo_task_done_status_value set to " << m_demo_task_done_status_value);
-        }
-        else
-        {
-            m_demo_task_done_status_value = task_msgs::TaskStatus::K_TASK_STATUS_DONE;
-            ROS_ERROR_STREAM(ros::this_node::getName() << " - m_demo_task_done_status_value invalid, setting to " << m_demo_task_done_status_value);
-        }
-    }
 }
 
 /**
@@ -114,9 +99,6 @@ void TaskHandler::runTask(const std::string &jsonstr_data)
         // publish running status
         publishTaskStatus(task_msgs::TaskStatus::K_TASK_STATUS_RUNNING);
         m_is_running = true;
-
-        /// @todo add codes to publish K_TASK_STATUS_DONE when task is done
-        // Send action goal
     
         // send a goal to the action
         visual_marker_docking::DockGoal goal;
@@ -134,7 +116,7 @@ void TaskHandler::stopTask()
     if (m_is_running)
     {
         ROS_INFO_STREAM(ros::this_node::getName() << " - Stopping task");
-        ac->cancelAllGoals();
+        ac->cancelGoal();
 
         publishTaskStatus(task_msgs::TaskStatus::K_TASK_STATUS_IDLE);
         m_is_running = false;
@@ -151,8 +133,15 @@ void TaskHandler::stopTask()
 void TaskHandler::actionDoneCB(const actionlib::SimpleClientGoalState& state,
               const visual_marker_docking::DockResultConstPtr& result)
 {
-    // publishTaskStatus(task_msgs::TaskStatus::K_TASK_STATUS_DONE);
-    // stopTask();
+    ROS_INFO("Task finished in state [%s]", state.toString().c_str());
+    if(result->dockingStatus)
+    {
+        publishTaskStatus(task_msgs::TaskStatus::K_TASK_STATUS_DONE);   // State = 2
+    }
+    else
+    {
+        publishTaskStatus(task_msgs::TaskStatus::K_TASK_STATUS_EXCEPTION);  // State = -1
+    }
 }
 
 } // handler
