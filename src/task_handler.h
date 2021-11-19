@@ -5,12 +5,13 @@
 #include "base.hpp"
 #include <actionlib/client/simple_action_client.h>
 #include <actionlib/client/terminal_state.h>
-#include <visual_marker_docking/DockAction.h>
+#include <robot_docker/DockAction.h>
+#include <jsoncpp/json/json.h>
 
 namespace handler
 {
 
-typedef actionlib::SimpleActionClient<visual_marker_docking::DockAction> Client;
+typedef actionlib::SimpleActionClient<robot_docker::DockAction> Client;
 /**
  * Sample template
  *
@@ -37,7 +38,7 @@ private:
     Client *ac;
 
     // Action complete callback
-    void actionDoneCB(const actionlib::SimpleClientGoalState& state, const visual_marker_docking::DockResultConstPtr& result);
+    void actionDoneCB(const actionlib::SimpleClientGoalState& state, const robot_docker::DockResultConstPtr& result);
 };
 
 } // handler

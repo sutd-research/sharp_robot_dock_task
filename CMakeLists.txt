@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(visual_dock_task)
+project(robot_dock_task)
 
 # we are using C++11
 SET(CMAKE_CXX_FLAGS "-std=c++0x")
@@ -15,7 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   actionlib
   actionlib_msgs
-  visual_marker_docking
+  robot_docker
   # dynamic reconfigure
   #dynamic_reconfigure
   #rospy
@@ -67,7 +67,7 @@ catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES task_handler_template
   CATKIN_DEPENDS roscpp roslib std_msgs actionlib_msgs
-  visual_marker_docking
+  robot_docker
 #  DEPENDS system_lib
 )
 
@@ -82,7 +82,7 @@ include_directories(
 )
 
 ## Declare a C++ executable
-add_executable(visual_dock_task_node        src/main_node.cpp
+add_executable(robot_dock_task_node        src/main_node.cpp
                                             src/base.hpp
                                             src/task_handler.cpp
                                             ../../mrccc/common/mission/basedata.cpp
@@ -94,13 +94,13 @@ add_executable(visual_dock_task_node        src/main_node.cpp
 )
 
 ## Add cmake target dependencies of the executable
-add_dependencies(visual_dock_task_node  ${${PROJECT_NAME}_EXPORTED_TARGETS}
+add_dependencies(robot_dock_task_node  ${${PROJECT_NAME}_EXPORTED_TARGETS}
                                         ${catkin_EXPORTED_TARGETS}
-                                        visual_marker_docking
+                                        robot_docker
 )
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(visual_dock_task_node
+target_link_libraries(robot_dock_task_node
   ${catkin_LIBRARIES}
   jsoncpp
 )

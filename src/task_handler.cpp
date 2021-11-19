@@ -49,7 +49,7 @@ void TaskHandler::InitROSPublishers()
 
     // create the action client
     // true causes the client to spin its own thread
-    ac = new actionlib::SimpleActionClient<visual_marker_docking::DockAction>("visual_dock/dock_server/", true);
+    ac = new actionlib::SimpleActionClient<robot_docker::DockAction>("/robot_docker/dock_server/", true);
 
     ROS_INFO("Waiting for action server to start.");
     // wait for the action server to start
@@ -91,6 +91,17 @@ void TaskHandler::runTask(const std::string &jsonstr_data)
     }
     else
     {
+        Json::Reader reader;
+        Json::Value params;
+        if(!reader.parse(jsonstr_data, params))
+        {
+            ROS_ERROR_STREAM("Error Parsing Task Parameters. Aborting task");
+        }
+        else
+        {
+            ROS_INFO_STREAM(params["dock_command"]);
+        }
+        
         ROS_INFO_STREAM(ros::this_node::getName() << " - Running task");
 
         // Note that when mission data contains ROS parameters for your task, and it is
@@ -101,8 +112,8 @@ void TaskHandler::runTask(const std::string &jsonstr_data)
         m_is_running = true;
     
         // send a goal to the action
-        visual_marker_docking::DockGoal goal;
-        goal.dockingCommand = 1;
+        robot_docker::DockGoal goal;
+        goal.dockingCommand = params["dock_command"].asInt();
         ac->sendGoal(goal, boost::bind(&TaskHandler::actionDoneCB, this, _1, _2), Client::SimpleActiveCallback(), Client::SimpleFeedbackCallback());
     }
 }
@@ -131,7 +142,7 @@ void TaskHandler::stopTask()
 }
 
 void TaskHandler::actionDoneCB(const actionlib::SimpleClientGoalState& state,
-              const visual_marker_docking::DockResultConstPtr& result)
+              const robot_docker::DockResultConstPtr& result)
 {
     ROS_INFO("Task finished in state [%s]", state.toString().c_str());
     if(result->dockingStatus)

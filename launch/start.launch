@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-    <node pkg="visual_dock_task" name="visual_dock_task" type="visual_dock_task_node" output="screen">
+    <node pkg="robot_dock_task" name="robot_dock_task" type="robot_dock_task_node" output="screen">
 
         <!-- this node's task ID -->
         <param name="task_id" value="10006" type="int" />
